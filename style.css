@@ -1,13 +1,20 @@
 :root {
-  --bg: #f6f3eb;
-  --text: #17363f;
-  --muted: #45626a;
-  --button-bg: #1f6f78;
-  --button-bg-hover: #174f56;
+  --bg: #f7f1e6;
+  --text: #1f3a42;
+  --muted: #526f75;
+  --teal: #2d747d;
+  --teal-dark: #1f5c64;
+  --rust: #bf644d;
+  --rust-dark: #a14f3b;
+  --gold: #d8b56a;
+  --line: rgba(31, 58, 66, 0.14);
+  --soft-panel: rgba(255, 255, 255, 0.34);
+  --button-bg: var(--teal);
+  --button-bg-hover: var(--teal-dark);
   --button-text: #f9f5ee;
-  --button-stop: #b34f3e;
-  --button-stop-hover: #943d2f;
-  --status-bg: rgba(255, 255, 255, 0.64);
+  --button-stop: var(--rust);
+  --button-stop-hover: var(--rust-dark);
+  --status-bg: rgba(255, 255, 255, 0.68);
 }
 
 body {
@@ -28,13 +35,22 @@ body {
 .page-layout {
   display: grid;
   grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-  gap: 44px;
+  gap: 0;
   align-items: start;
 }
 
 .lab-column,
 .blog-column {
   min-width: 0;
+}
+
+.lab-column {
+  padding-right: 28px;
+}
+
+.blog-column {
+  padding-left: 28px;
+  border-left: 2px solid var(--line);
 }
 
 h1 {
@@ -58,6 +74,13 @@ h1 {
   white-space: nowrap;
 }
 
+.blog-meta {
+  margin: 12px 0 0;
+  font-size: 0.96rem;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
 .intro {
   margin: 16px 0 0;
   max-width: 62ch;
@@ -71,7 +94,18 @@ h1 {
   border-radius: 0;
   background: transparent;
   border: 0;
-  border-top: 1px solid rgba(23, 54, 63, 0.12);
+  border-top: 1px solid var(--line);
+}
+
+.lab-column .panel:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.lab-column .panel h2,
+.blog-section-title {
+  color: var(--teal-dark);
 }
 
 .blog-entry {
@@ -158,6 +192,10 @@ button:hover {
   line-height: 1.8;
 }
 
+.notes li::marker {
+  color: var(--gold);
+}
+
 .graph-figure {
   margin: 30px 0 28px;
 }
@@ -167,6 +205,7 @@ button:hover {
   font-size: 0.98rem;
   font-weight: 700;
   letter-spacing: 0.01em;
+  color: var(--rust-dark);
 }
 
 .graph-figure img {
@@ -175,8 +214,8 @@ button:hover {
   max-width: 920px;
   margin: 0 auto;
   border-radius: 18px;
-  border: 1px solid rgba(23, 54, 63, 0.12);
-  box-shadow: 0 12px 28px rgba(23, 54, 63, 0.12);
+  border: 1px solid rgba(31, 58, 66, 0.14);
+  box-shadow: 0 12px 28px rgba(31, 58, 66, 0.1);
 }
 
 .graph-figure figcaption {
@@ -191,8 +230,8 @@ button:hover {
   margin: 28px 0 0;
   padding: 16px 18px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.46);
-  border: 1px solid rgba(23, 54, 63, 0.08);
+  background: var(--soft-panel);
+  border: 1px solid rgba(31, 58, 66, 0.08);
   color: var(--muted);
 }
 
@@ -205,6 +244,15 @@ button:hover {
   .page-layout {
     grid-template-columns: 1fr;
     gap: 28px;
+  }
+
+  .lab-column,
+  .blog-column {
+    padding: 0;
+  }
+
+  .blog-column {
+    border-left: 0;
   }
 
   .controls {
