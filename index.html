@@ -9,17 +9,11 @@
   <body>
     <main class="app">
       <header class="hero">
-        <h1>Farnell Synthesis Lab 3 Part I &amp; II</h1>
-        <p class="subtitle">Footsteps on Gravel Blog</p>
-        <p class="intro">
-          This page documents my Web Audio versions of the two lab sounds: a
-          translated babbling brook patch for Part I and a procedural
-          footsteps-on-gravel sound for Part II.
-        </p>
+        <h1>Farnell Synthesis Lab 3</h1>
       </header>
 
       <section class="panel">
-        <h2>Part I: Babbling Brook</h2>
+        <h2>Babbling Brook (raise volume)</h2>
         <p>
           For Part I, I translated the SuperCollider brook patch into Web
           Audio. The sound starts with Brown Noise, then uses filtering and
@@ -28,6 +22,7 @@
         <div class="controls">
           <button id="play-brown-noise">Play Brown Noise</button>
           <button id="play-brook">Play Babbling Brook</button>
+          <button class="stop-audio-button">Stop Audio</button>
         </div>
         <ul class="notes">
           <li>Brown Noise acts as the raw water source.</li>
@@ -37,7 +32,7 @@
       </section>
 
       <section class="panel">
-        <h2>Part II: Footsteps on Gravel</h2>
+        <h2>Footsteps on Gravel</h2>
         <p>
           For Part II, I followed Farnell&rsquo;s idea of separating control from
           synthesis. Each step is broken into heel, edge, and ball phases, and
@@ -46,7 +41,7 @@
         </p>
         <div class="controls">
           <button id="play-footsteps">Play Footsteps</button>
-          <button id="stop-audio">Stop Audio</button>
+          <button class="stop-audio-button">Stop Audio</button>
         </div>
         <ul class="notes">
           <li>The heel adds the strongest impact.</li>
@@ -56,6 +51,12 @@
       </section>
 
       <p id="status" class="status">Audio is not running yet.</p>
+
+      <div class="section-break" aria-hidden="true"></div>
+
+      <header class="hero blog-hero">
+        <h1>Footsteps on Gravel Blog</h1>
+      </header>
     </main>
 
     <script src="./script.js"></script>

@@ -1,14 +1,17 @@
+// Page buttons and status text.
 const brownNoiseButton = document.querySelector("#play-brown-noise");
 const brookButton = document.querySelector("#play-brook");
 const footstepsButton = document.querySelector("#play-footsteps");
-const stopButton = document.querySelector("#stop-audio");
+const stopButtons = document.querySelectorAll(".stop-audio-button");
 const statusText = document.querySelector("#status");
 
+// Shared audio state.
 let audioCtx;
 let currentCleanup = null;
 let brownNoiseBufferCache = null;
 let whiteNoiseBufferCache = null;
 
+// Make sure the audio context exists and is allowed to play.
 async function ensureAudioContext() {
   if (!audioCtx) {
     audioCtx = new AudioContext();
@@ -19,6 +22,7 @@ async function ensureAudioContext() {
   }
 }
 
+// Build one reusable Brown Noise buffer, then make a looping source from it.
 function createBrownNoiseSource(context) {
   if (!brownNoiseBufferCache || brownNoiseBufferCache.sampleRate !== context.sampleRate) {
     const bufferSize = 10 * context.sampleRate;
@@ -41,6 +45,7 @@ function createBrownNoiseSource(context) {
   return source;
 }
 
+// Build one reusable White Noise buffer for short bursts and textures.
 function createWhiteNoiseSource(context) {
   if (!whiteNoiseBufferCache || whiteNoiseBufferCache.sampleRate !== context.sampleRate) {
     const bufferSize = Math.floor(0.25 * context.sampleRate);
@@ -58,13 +63,14 @@ function createWhiteNoiseSource(context) {
   return source;
 }
 
+// This smooths the brook noise a little before it hits the filter.
 function createOnePole(context, coefficient) {
-  // This smooths the noise a little before it hits the filter.
   const feedforward = [1 - Math.abs(coefficient)];
   const feedback = [1, -coefficient];
   return new IIRFilterNode(context, { feedforward, feedback });
 }
 
+// Stop whichever sound is currently running before starting a new one.
 function stopCurrentScene() {
   if (currentCleanup) {
     currentCleanup();
@@ -72,6 +78,7 @@ function stopCurrentScene() {
   }
 }
 
+// Source-only button for hearing Brown Noise by itself.
 function playBrownNoise() {
   stopCurrentScene();
 
@@ -91,6 +98,8 @@ function playBrownNoise() {
   };
 }
 
+// One layer of the brook patch:
+// BrownNoise -> OnePole -> RHPF, with another noise source moving the cutoff.
 function createBrookLayer({
   controlFrequency,
   controlScale,
@@ -161,6 +170,7 @@ function createBrookLayer({
   };
 }
 
+// Part I sound: two bubbling layers mixed together.
 function playBabblingBrook() {
   stopCurrentScene();
 
@@ -196,6 +206,7 @@ function playBabblingBrook() {
   };
 }
 
+// Keep track of scheduled bursts so they can all be stopped cleanly.
 function registerTimedSource(activeEvents, source, nodes) {
   const entry = { source, nodes };
   activeEvents.add(entry);
@@ -206,6 +217,7 @@ function registerTimedSource(activeEvents, source, nodes) {
   };
 }
 
+// Short filtered noise burst for gravel texture.
 function spawnFilteredNoiseBurst(activeEvents, {
   when,
   duration,
@@ -243,6 +255,7 @@ function spawnFilteredNoiseBurst(activeEvents, {
   source.stop(when + duration + 0.03);
 }
 
+// A small group of noise bursts makes one rough gravel contact.
 function spawnCrunchCluster(activeEvents, {
   when,
   bursts,
@@ -267,6 +280,7 @@ function spawnCrunchCluster(activeEvents, {
   }
 }
 
+// Low impact tone for the body of a footstep.
 function spawnThump(activeEvents, {
   when,
   duration,
@@ -298,6 +312,7 @@ function spawnThump(activeEvents, {
   oscillator.stop(when + duration + 0.03);
 }
 
+// One full step is made from heel, edge, and ball phases.
 function spawnFootstep(activeEvents, {
   when,
   side,
@@ -366,6 +381,7 @@ function spawnFootstep(activeEvents, {
   });
 }
 
+// Part II sound: alternate left and right gravel steps.
 function playFootsteps() {
   stopCurrentScene();
 
@@ -407,6 +423,7 @@ function playFootsteps() {
   };
 }
 
+// UI events.
 brownNoiseButton.addEventListener("click", async () => {
   await ensureAudioContext();
   playBrownNoise();
@@ -417,8 +434,7 @@ brownNoiseButton.addEventListener("click", async () => {
 brookButton.addEventListener("click", async () => {
   await ensureAudioContext();
   playBabblingBrook();
-  statusText.textContent =
-    "Babbling brook is playing. This version follows the James McCartney sample patch.";
+  statusText.textContent = "Babbling brook is playing.";
 });
 
 footstepsButton.addEventListener("click", async () => {
@@ -428,7 +444,7 @@ footstepsButton.addEventListener("click", async () => {
     "Footsteps are playing. This Part II sound uses heel, edge, and ball phases to drive a gravel texture.";
 });
 
-stopButton.addEventListener("click", () => {
+stopButtons.forEach((button) => button.addEventListener("click", () => {
   stopCurrentScene();
   statusText.textContent = "Audio stopped.";
-});
+}));
