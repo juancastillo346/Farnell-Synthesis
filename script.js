@@ -1,10 +1,26 @@
 const brownNoiseButton = document.querySelector("#play-brown-noise");
 const brookButton = document.querySelector("#play-brook");
 const stopButton = document.querySelector("#stop-audio");
+const themeButton = document.querySelector("#toggle-theme");
 const statusText = document.querySelector("#status");
 
 let audioCtx;
 let currentCleanup = null;
+
+function applyTheme(theme) {
+  const isDark = theme === "dark";
+  document.body.classList.toggle("dark-theme", isDark);
+  themeButton.textContent = isDark
+    ? "Switch to Light Mode"
+    : "Switch to Dark Mode";
+}
+
+function initializeTheme() {
+  const savedTheme = localStorage.getItem("theme");
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const theme = savedTheme || (prefersDark ? "dark" : "light");
+  applyTheme(theme);
+}
 
 async function ensureAudioContext() {
   if (!audioCtx) {
@@ -195,3 +211,13 @@ stopButton.addEventListener("click", () => {
   stopCurrentScene();
   statusText.textContent = "Audio stopped.";
 });
+
+themeButton.addEventListener("click", () => {
+  const nextTheme = document.body.classList.contains("dark-theme")
+    ? "light"
+    : "dark";
+  applyTheme(nextTheme);
+  localStorage.setItem("theme", nextTheme);
+});
+
+initializeTheme();

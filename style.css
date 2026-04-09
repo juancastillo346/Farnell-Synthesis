@@ -1,18 +1,48 @@
+html {
+  color-scheme: light dark;
+}
+
+:root {
+  --bg-top: #eef6f7;
+  --bg-bottom: #dbe9ec;
+  --text: #16333b;
+  --panel: rgba(255, 255, 255, 0.78);
+  --panel-border: rgba(22, 51, 59, 0.12);
+  --panel-shadow: rgba(22, 51, 59, 0.08);
+  --button-bg: #1f6f78;
+  --button-bg-hover: #195c64;
+  --button-text: #ffffff;
+}
+
+body.dark-theme {
+  --bg-top: #0f1a1d;
+  --bg-bottom: #14262b;
+  --text: #e2f0f2;
+  --panel: rgba(18, 34, 38, 0.88);
+  --panel-border: rgba(189, 225, 231, 0.14);
+  --panel-shadow: rgba(0, 0, 0, 0.28);
+  --button-bg: #6fb3bc;
+  --button-bg-hover: #8dc7cf;
+  --button-text: #0d1a1d;
+}
+
 body {
   margin: 0;
   font-family: Georgia, serif;
-  background: linear-gradient(180deg, #eef6f7 0%, #dbe9ec 100%);
-  color: #16333b;
+  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+  color: var(--text);
+  transition: background 180ms ease, color 180ms ease;
 }
 
 .app {
   max-width: 720px;
   margin: 64px auto;
   padding: 32px;
-  background: rgba(255, 255, 255, 0.78);
-  border: 1px solid rgba(22, 51, 59, 0.12);
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
   border-radius: 20px;
-  box-shadow: 0 18px 50px rgba(22, 51, 59, 0.08);
+  box-shadow: 0 18px 50px var(--panel-shadow);
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 
 h1 {
@@ -31,13 +61,15 @@ button {
   border-radius: 999px;
   padding: 12px 20px;
   font: inherit;
-  background: #1f6f78;
-  color: white;
+  background: var(--button-bg);
+  color: var(--button-text);
   cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
 }
 
 button:hover {
-  background: #195c64;
+  background: var(--button-bg-hover);
+  transform: translateY(-1px);
 }
 
 ol {
