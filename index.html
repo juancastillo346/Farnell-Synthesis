@@ -8,55 +8,131 @@
   </head>
   <body>
     <main class="app">
-      <header class="hero">
-        <h1>Farnell Synthesis Lab 3</h1>
-      </header>
+      <div class="page-layout">
+        <section class="lab-column">
+          <header class="hero">
+            <h1>Farnell Synthesis Lab 3</h1>
+          </header>
 
-      <section class="panel">
-        <h2>Babbling Brook (raise volume)</h2>
-        <p>
-          For Part I, I translated the SuperCollider brook patch into Web
-          Audio. The sound starts with Brown Noise, then uses filtering and
-          slow cutoff modulation to make the texture feel uneven and watery.
-        </p>
-        <div class="controls">
-          <button id="play-brown-noise">Play Brown Noise</button>
-          <button id="play-brook">Play Babbling Brook</button>
-          <button class="stop-audio-button">Stop Audio</button>
-        </div>
-        <ul class="notes">
-          <li>Brown Noise acts as the raw water source.</li>
-          <li>OnePole smooths the main noise before filtering.</li>
-          <li>A low-pass filtered control signal moves the high-pass cutoff.</li>
-        </ul>
-      </section>
+          <section class="panel">
+            <h2>Babbling Brook</h2>
+            <p>
+              For Part I, I translated the SuperCollider brook patch into Web
+              Audio. The sound starts with Brown Noise, then uses filtering and
+              slow cutoff modulation to make the texture feel uneven and watery.
+            </p>
+            <div class="controls">
+              <button id="play-brown-noise">Play Brown Noise</button>
+              <button id="play-brook">Play Babbling Brook (raise volume)</button>
+              <button class="stop-audio-button">Stop Audio</button>
+            </div>
+            <ul class="notes">
+              <li>Brown Noise acts as the raw water source.</li>
+              <li>OnePole smooths the main noise before filtering.</li>
+              <li>A low-pass filtered control signal moves the high-pass cutoff.</li>
+            </ul>
+          </section>
 
-      <section class="panel">
-        <h2>Footsteps on Gravel</h2>
-        <p>
-          For Part II, I followed Farnell&rsquo;s idea of separating control from
-          synthesis. Each step is broken into heel, edge, and ball phases, and
-          those phases drive short filtered noise bursts to create a gravel
-          texture.
-        </p>
-        <div class="controls">
-          <button id="play-footsteps">Play Footsteps</button>
-          <button class="stop-audio-button">Stop Audio</button>
-        </div>
-        <ul class="notes">
-          <li>The heel adds the strongest impact.</li>
-          <li>The edge phase carries the body weight across the ground.</li>
-          <li>The ball phase adds the push-off at the end of the step.</li>
-        </ul>
-      </section>
+          <section class="panel">
+            <h2>Footsteps on Gravel</h2>
+            <p>
+              For Part II, I followed Farnell&rsquo;s idea of separating control from
+              synthesis. Each step is broken into heel, edge, and ball phases, and
+              those phases drive short filtered noise bursts to create a gravel
+              texture.
+            </p>
+            <div class="controls">
+              <button id="play-footsteps">Play Footsteps</button>
+              <button class="stop-audio-button">Stop Audio</button>
+            </div>
+            <ul class="notes">
+              <li>The heel adds the strongest impact.</li>
+              <li>The edge phase carries the body weight across the ground.</li>
+              <li>The ball phase adds the push-off at the end of the step.</li>
+            </ul>
+          </section>
 
-      <p id="status" class="status">Audio is not running yet.</p>
+          <p id="status" class="status">Audio is not running yet.</p>
+        </section>
 
-      <div class="section-break" aria-hidden="true"></div>
+        <section class="blog-column">
+          <header class="hero blog-hero">
+            <h1>Footsteps on Gravel Blog</h1>
+          </header>
 
-      <header class="hero blog-hero">
-        <h1>Footsteps on Gravel Blog</h1>
-      </header>
+          <article class="blog-entry">
+            <h2 class="blog-section-title">Design Goal</h2>
+            <p class="blog-lede">
+              For this sound, I was aiming for the feeling of boots on gravel rather
+              than a single abstract footstep click. What surprised me most while
+              building it was realizing that one footstep is not really one sound at
+              all. It is a sequence of smaller events that happen close together, and
+              the timing between those events is what makes the result believable.
+            </p>
+
+            <h2 class="blog-section-title">Breaking a Step into Phases</h2>
+            <p>
+              Before working on this patch, I mostly thought of a step as one sound:
+              foot down, sound happens, move on. Farnell&rsquo;s model pushed me to think
+              about the internal phases of a step instead. In my version, each step
+              is divided into heel, edge, and ball phases. The heel gives the first
+              impact, the edge carries the weight across the surface, and the ball
+              creates the push-off at the end. Once I started spacing those phases
+              more carefully, the patch stopped sounding like a pile of clicks and
+              started sounding more like actual footsteps on gravel.
+            </p>
+
+            <p>
+              The synthesis itself is a mix of low-frequency impact and filtered
+              noise. I used short oscillator thumps to give the steps some body and
+              weight, then layered filtered white-noise bursts on top to create the
+              gravel texture. Those two ideas fit together well because the
+              oscillator gives the sense of a boot landing, while the filtered noise
+              gives the sound of loose stones shifting under pressure. In practice,
+              the hardest part was learning how to use the filters well. Small
+              changes in timing or filter ranges could make the sound feel grounded
+              and human, or turn it into something overly clicky and artificial.
+            </p>
+
+            <figure class="graph-figure">
+              <div class="figure-title">Figure 1. Signal Flow Graph for One Footstep on Gravel</div>
+              <img
+                src="./assets/footsteps-graph.png"
+                alt="Web Audio signal flow graph for one footstep on gravel"
+              />
+              <figcaption>
+                The oscillator paths create the low impact thumps, while the
+                AudioBufferSource paths create the filtered gravel crunches. All of
+                those short events are mixed together into one final footstep.
+              </figcaption>
+            </figure>
+
+            <h2 class="blog-section-title">Reading the Graph</h2>
+            <p>
+              The signal flow graph makes that layering very visible. A single step
+              in my patch is made from multiple temporary events, not one permanent
+              signal chain. The oscillator branches represent the low heel and
+              push-off impacts, while the AudioBufferSource branches go through
+              BiquadFilters, GainNodes, and StereoPanners to shape the surface
+              texture. That was one of the biggest insights I got from programming
+              this myself: a convincing footstep depends on several small sounds
+              arriving at the right moments, not just on having the right texture.
+            </p>
+
+            <h2 class="blog-section-title">Process and Takeaways</h2>
+            <p>
+              My final result sounds pretty close to footsteps on gravel, although I
+              still think it is a little more grainy than real walking and could
+              benefit from more variation in step length and timing. Even so, this
+              project gave me a much better understanding of why procedural audio is
+              useful. Instead of replaying one fixed sample, I can control the
+              rhythm, the balance between impact and crunch, and the relationship
+              between the phases of the step. Building it made the sound of walking
+              feel much more complex than I had assumed at the start.
+            </p>
+          </article>
+        </section>
+      </div>
     </main>
 
     <script src="./script.js"></script>
