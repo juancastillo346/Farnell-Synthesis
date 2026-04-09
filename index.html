@@ -8,27 +8,54 @@
   </head>
   <body>
     <main class="app">
-      <h1>Farnell Synthesis Lab 3</h1>
-      <p>
-        We are translating the SuperCollider babbling brook patch into
-        WebAudio one stage at a time.
-      </p>
+      <header class="hero">
+        <h1>Farnell Synthesis Lab 3 Part I &amp; II</h1>
+        <p class="subtitle">Footsteps on Gravel Blog</p>
+        <p class="intro">
+          This page documents my Web Audio versions of the two lab sounds: a
+          translated babbling brook patch for Part I and a procedural
+          footsteps-on-gravel sound for Part II.
+        </p>
+      </header>
 
-      <div class="controls">
-        <button id="play-brown-noise">Play Brown Noise</button>
-        <button id="play-brook">Play Babbling Brook</button>
-        <button id="stop-audio">Stop Audio</button>
-        <button id="toggle-theme">Switch to Dark Mode</button>
-      </div>
+      <section class="panel">
+        <h2>Part I: Babbling Brook</h2>
+        <p>
+          For Part I, I translated the SuperCollider brook patch into Web
+          Audio. The sound starts with Brown Noise, then uses filtering and
+          slow cutoff modulation to make the texture feel uneven and watery.
+        </p>
+        <div class="controls">
+          <button id="play-brown-noise">Play Brown Noise</button>
+          <button id="play-brook">Play Babbling Brook</button>
+        </div>
+        <ul class="notes">
+          <li>Brown Noise acts as the raw water source.</li>
+          <li>OnePole smooths the main noise before filtering.</li>
+          <li>A low-pass filtered control signal moves the high-pass cutoff.</li>
+        </ul>
+      </section>
 
-      <ol>
-        <li>Brown Noise gives us the raw, noisy water source.</li>
-        <li>OnePole smooths that source before filtering.</li>
-        <li>LPF on a second Brown Noise source creates slow cutoff motion.</li>
-        <li>RHPF emphasizes little bright bubbles and splashes.</li>
-      </ol>
+      <section class="panel">
+        <h2>Part II: Footsteps on Gravel</h2>
+        <p>
+          For Part II, I followed Farnell&rsquo;s idea of separating control from
+          synthesis. Each step is broken into heel, edge, and ball phases, and
+          those phases drive short filtered noise bursts to create a gravel
+          texture.
+        </p>
+        <div class="controls">
+          <button id="play-footsteps">Play Footsteps</button>
+          <button id="stop-audio">Stop Audio</button>
+        </div>
+        <ul class="notes">
+          <li>The heel adds the strongest impact.</li>
+          <li>The edge phase carries the body weight across the ground.</li>
+          <li>The ball phase adds the push-off at the end of the step.</li>
+        </ul>
+      </section>
 
-      <p id="status">Audio is not running yet.</p>
+      <p id="status" class="status">Audio is not running yet.</p>
     </main>
 
     <script src="./script.js"></script>
