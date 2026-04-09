@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Farnell Synthesis Lab 3</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <h1>Farnell Synthesis Lab 3</h1>
+      <p>
+        We are translating the SuperCollider babbling brook patch into
+        WebAudio one stage at a time.
+      </p>
+
+      <div class="controls">
+        <button id="play-brown-noise">Play Brown Noise</button>
+        <button id="play-brook">Play Babbling Brook</button>
+        <button id="stop-audio">Stop Audio</button>
+      </div>
+
+      <ol>
+        <li>Brown Noise gives us the raw, noisy water source.</li>
+        <li>OnePole smooths that source before filtering.</li>
+        <li>LPF on a second Brown Noise source creates slow cutoff motion.</li>
+        <li>RHPF emphasizes little bright bubbles and splashes.</li>
+      </ol>
+
+      <p id="status">Audio is not running yet.</p>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
