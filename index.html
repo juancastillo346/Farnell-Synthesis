@@ -84,6 +84,67 @@
               and human, or turn it into something overly clicky and artificial.
             </p>
 
+            <h2 class="blog-section-title">How one step is scheduled in code</h2>
+            <p>
+              In code, a single footstep is built in <code>spawnFootstep</code>. It
+              picks a stereo pan for left or right, then schedules three moments:
+              heel, edge, and ball. Small random offsets keep consecutive steps from
+              sounding identical.
+            </p>
+            <pre><code>const pan = side === "left" ? -0.28 : 0.28;
+const heelTime = when + Math.random() * 0.006;
+const edgeTime = heelTime + 0.055 + Math.random() * 0.012;
+const ballTime = edgeTime + 0.075 + Math.random() * 0.012;</code></pre>
+            <p>
+              After those times are fixed, the heel phase gets a low thump plus a
+              short gravel cluster, the edge gets a softer filtered noise burst, and
+              the ball gets a smaller thump plus a brighter cluster. That is why a
+              graph or inspector often shows about two oscillators and five noise
+              sources for one step: two <code>spawnThump</code> calls and five
+              filtered noise bursts spread across the three phases.
+            </p>
+
+            <h2 class="blog-section-title">Thump vs gravel texture</h2>
+            <p>
+              The body of the step comes from <code>spawnThump</code>: a sine
+              oscillator whose frequency drops quickly, with a short attack and decay
+              on the gain. That reads as weight hitting the ground rather than a
+              sharp tick.
+            </p>
+            <p>
+              The gravel comes from <code>spawnFilteredNoiseBurst</code>. It plays a
+              looping white-noise buffer for a short window, runs it through a
+              high-pass and a low-pass, envelopes the gain, and pans it.
+              <code>spawnCrunchCluster</code> fires several of those bursts close
+              together with slightly different duration, level, and filter settings
+              so one contact sounds like many little stones.
+            </p>
+
+            <h2 class="blog-section-title">Keeping the walk going</h2>
+            <p>
+              Continuous walking is not one long synthesizer patch.
+              <code>playFootsteps</code> mixes everything into a master gain, then
+              uses a timer to schedule alternating left and right steps. Each tick
+              calls <code>spawnFootstep</code> slightly ahead of
+              <code>currentTime</code> so the events land on the audio clock cleanly.
+            </p>
+            <pre><code>const scheduleStep = () => {
+  spawnFootstep(activeEvents, {
+    when: audioCtx.currentTime + 0.03,
+    side: nextSide,
+    destination: masterGain,
+  });
+  nextSide = nextSide === "left" ? "right" : "left";
+};
+scheduleStep();
+const stepTimer = window.setInterval(scheduleStep, 720);</code></pre>
+            <p>
+              Every burst and thump is short-lived, so stopping has to tear those
+              nodes down on purpose. Cleanup clears the interval and stops and
+              disconnects everything still listed in <code>activeEvents</code>, so
+              no leftover Web Audio nodes stay connected.
+            </p>
+
             <figure class="graph-figure">
               <div class="figure-title">Figure 1. Signal Flow Graph for One Footstep on Gravel</div>
               <img
